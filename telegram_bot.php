@@ -5,10 +5,10 @@ $website = "https://api.telegram.org/bot".$apiToken;
 
 // Sample card data
 $cards = [
-    ["image" => "https://via.placeholder.com/150", "name" => "Business 1"],
-    ["image" => "https://via.placeholder.com/150", "name" => "Business 2"],
-    ["image" => "https://via.placeholder.com/150", "name" => "Business 3"],
-    ["image" => "https://via.placeholder.com/150", "name" => "Business 4"]
+    ["image" => "/images/dominos.jpeg", "name" => "Domino's"],
+    ["image" => "/images/pizzahut.jpeg", "name" => "Pizza Hut"],
+    ["image" => "/images/lapinoz.jpeg", "name" => "La Pinoz"],
+    ["image" => "/images/ovenstory.jpeg", "name" => "Oven Story"]
 ];
 
 $update = file_get_contents('php://input');
@@ -80,7 +80,7 @@ function deleteMessage($chatId, $messageId) {
 
 function sendEndMessage($chatId) {
     global $website;
-    $message = "No more businesses to show.";
+    $message = "That's all for today !. Check back tomorrow";
     $url = $website."/sendMessage?chat_id=".$chatId."&text=".urlencode($message);
     file_get_contents($url);
 }
