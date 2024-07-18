@@ -26,6 +26,7 @@ if (isset($update["message"])) {
 if (isset($update["callback_query"])) {
     $callbackQuery = $update["callback_query"];
     $chatId = $callbackQuery["message"]["chat"]["id"];
+    $messageId = $callbackQuery["message"]["message_id"];
     $data = $callbackQuery["data"];
 
     $parts = explode("_", $data);
@@ -35,6 +36,7 @@ if (isset($update["callback_query"])) {
     if ($action == "like") {
         sendConfetti($chatId);
     } elseif ($action == "dislike") {
+        deleteMessage($chatId, $messageId);
         $nextIndex = $currentIndex + 1;
         if ($nextIndex < count($cards)) {
             sendCard($chatId, $nextIndex);
@@ -70,6 +72,12 @@ function sendConfetti($chatId) {
     global $website;
     $message = "🎉 Congratulations! 🎉";
     $url = $website."/sendMessage?chat_id=".$chatId."&text=".urlencode($message);
+    file_get_contents($url);
+}
+
+function deleteMessage($chatId, $messageId) {
+    global $website;
+    $url = $website."/deleteMessage?chat_id=".$chatId."&message_id=".$messageId;
     file_get_contents($url);
 }
 
