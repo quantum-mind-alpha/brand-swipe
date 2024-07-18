@@ -3,6 +3,14 @@
 $apiToken = "7328905715:AAFU-FLZfoTz5To-pwr0QRybmSBIApS1jgo";
 $website = "https://api.telegram.org/bot".$apiToken;
 
+// Sample card data
+$cards = [
+    "Card 1: This is the first card.",
+    "Card 2: This is the second card.",
+    "Card 3: This is the third card.",
+    "Card 4: This is the fourth card."
+];
+
 $update = file_get_contents('php://input');
 $update = json_decode($update, TRUE);
 
@@ -11,54 +19,51 @@ if (isset($update["message"])) {
     $message = $update["message"]["text"];
 
     if ($message == "/start") {
-        sendWelcomeMessage($chatId);
-    } elseif ($message == "/cards") {
-        sendCards($chatId);
+        sendCard($chatId, 0);
     }
 }
 
-function sendWelcomeMessage($chatId) {
-    global $website;
-    $message = "Welcome! Use /cards to see the available cards.";
-    $url = $website."/sendMessage?chat_id=".$chatId."&text=".urlencode($message);
-    file_get_contents($url);
-}
-
-function sendCards($chatId) {
-    global $website;
-    $keyboard = [
-        'inline_keyboard' => [
-            [
-                ['text' => "Card 1", 'callback_data' => 'CARD_1'],
-                ['text' => "Card 2", 'callback_data' => 'CARD_2']
-            ],
-            [
-                ['text' => "Card 3", 'callback_data' => 'CARD_3'],
-                ['text' => "Card 4", 'callback_data' => 'CARD_4']
-            ]
-        ]
-    ];
-
-    $encodedKeyboard = json_encode($keyboard);
-
-    $message = "Choose a card:";
-    $url = $website."/sendMessage?chat_id=".$chatId."&text=".urlencode($message)."&reply_markup=".$encodedKeyboard;
-    file_get_contents($url);
-}
-
-// Handle callback queries
 if (isset($update["callback_query"])) {
     $callbackQuery = $update["callback_query"];
     $chatId = $callbackQuery["message"]["chat"]["id"];
     $data = $callbackQuery["data"];
 
-    handleCardSelection($chatId, $data);
+    $parts = explode("_", $data);
+    $action = $parts[0];
+    $currentIndex = (int)$parts[1];
+
+    if ($action == "next") {
+        $nextIndex = $currentIndex + 1;
+        if ($nextIndex < count($cards)) {
+            sendCard($chatId, $nextIndex);
+        }
+    } elseif ($action == "prev") {
+        $prevIndex = $currentIndex - 1;
+        if ($prevIndex >= 0) {
+            sendCard($chatId, $prevIndex);
+        }
+    }
 }
 
-function handleCardSelection($chatId, $data) {
-    global $website;
-    $message = "You selected: " . $data;
-    $url = $website."/sendMessage?chat_id=".$chatId."&text=".urlencode($message);
+function sendCard($chatId, $index) {
+    global $website, $cards;
+
+    $keyboard = [
+        'inline_keyboard' => []
+    ];
+
+    if ($index > 0) {
+        $keyboard['inline_keyboard'][] = [['text' => "Previous", 'callback_data' => "prev_$index"]];
+    }
+
+    if ($index < count($cards) - 1) {
+        $keyboard['inline_keyboard'][] = [['text' => "Next", 'callback_data' => "next_$index"]];
+    }
+
+    $encodedKeyboard = json_encode($keyboard);
+
+    $message = $cards[$index];
+    $url = $website."/sendMessage?chat_id=".$chatId."&text=".urlencode($message)."&reply_markup=".$encodedKeyboard;
     file_get_contents($url);
 }
 
