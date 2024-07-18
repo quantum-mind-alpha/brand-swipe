@@ -5,10 +5,10 @@ $website = "https://api.telegram.org/bot".$apiToken;
 
 // Sample card data
 $cards = [
-    ["image" => "https://seal-app-asu6p.ondigitalocean.app/images/dominos.jpeg", "name" => "Domino's"],
-    ["image" => "https://seal-app-asu6p.ondigitalocean.app/images/pizzahut.jpeg", "name" => "Pizza Hut"],
-    ["image" => "https://seal-app-asu6p.ondigitalocean.app/images/lapinoz.jpeg", "name" => "La Pinoz"],
-    ["image" => "https://seal-app-asu6p.ondigitalocean.app/images/ovenstory.jpeg", "name" => "Oven Story"]
+    ["image" => "https://seal-app-asu6p.ondigitalocean.app/images/dominos.jpeg?size=200x200", "name" => "Domino's"],
+    ["image" => "https://seal-app-asu6p.ondigitalocean.app/images/pizzahut.jpeg?size=200x200", "name" => "Pizza Hut"],
+    ["image" => "https://seal-app-asu6p.ondigitalocean.app/images/lapinoz.jpeg?size=200x200", "name" => "La Pinoz"],
+    ["image" => "https://seal-app-asu6p.ondigitalocean.app/images/ovenstory.jpeg?size=200x200", "name" => "Oven Story"]
 ];
 
 $update = file_get_contents('php://input');
@@ -19,8 +19,7 @@ if (isset($update["message"])) {
     $message = $update["message"]["text"];
 
     if ($message == "/start") {
-        clearMessages($chatId);
-        sendCard($chatId, 0);
+        sendWelcomeMessage($chatId);
     }
 }
 
@@ -36,31 +35,34 @@ if (isset($update["callback_query"])) {
 
     deleteMessage($chatId, $messageId);
 
-    $nextIndex = $currentIndex + 1;
+    if ($action == "start") {
+        sendCard($chatId, 0);
+    } elseif ($action == "like" || $action == "dislike") {
+        $nextIndex = $currentIndex + 1;
         if ($nextIndex < count($cards)) {
             sendCard($chatId, $nextIndex);
         } else {
             sendEndMessage($chatId);
         }
+    }
 }
 
-function clearMessages($chatId) {
+function sendWelcomeMessage($chatId) {
     global $website;
-    $updates = file_get_contents($website."/getUpdates");
-    $updates = json_decode($updates, TRUE);
 
-    if ($updates["ok"]) {
-        foreach ($updates["result"] as $update) {
-            if (isset($update["message"]["chat"]["id"]) && $update["message"]["chat"]["id"] == $chatId) {
-                $messageId = $update["message"]["message_id"];
-                deleteMessage($chatId, $messageId);
-            }
-            if (isset($update["callback_query"]["message"]["chat"]["id"]) && $update["callback_query"]["message"]["chat"]["id"] == $chatId) {
-                $messageId = $update["callback_query"]["message"]["message_id"];
-                deleteMessage($chatId, $messageId);
-            }
-        }
-    }
+    $keyboard = [
+        'inline_keyboard' => [
+            [
+                ['text' => "Start", 'callback_data' => "start_0"]
+            ]
+        ]
+    ];
+
+    $encodedKeyboard = json_encode($keyboard);
+    $message = "Press Start to see today's Businesses";
+
+    $url = $website."/sendMessage?chat_id=".$chatId."&text=".urlencode($message)."&reply_markup=".$encodedKeyboard;
+    file_get_contents($url);
 }
 
 function sendCard($chatId, $index) {
@@ -85,13 +87,6 @@ function sendCard($chatId, $index) {
     file_get_contents($url);
 }
 
-function sendConfetti($chatId) {
-    global $website;
-    $message = "🎉 Congratulations! 🎉";
-    $url = $website."/sendMessage?chat_id=".$chatId."&text=".urlencode($message);
-    file_get_contents($url);
-}
-
 function deleteMessage($chatId, $messageId) {
     global $website;
     $url = $website."/deleteMessage?chat_id=".$chatId."&message_id=".$messageId;
@@ -100,7 +95,7 @@ function deleteMessage($chatId, $messageId) {
 
 function sendEndMessage($chatId) {
     global $website;
-    $message = "No more businesses to show.";
+    $message = "That's all for today! For new businesses, check back tomorrow.";
     $url = $website."/sendMessage?chat_id=".$chatId."&text=".urlencode($message);
     file_get_contents($url);
 }
