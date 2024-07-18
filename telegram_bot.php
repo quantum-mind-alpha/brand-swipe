@@ -1,6 +1,6 @@
 <?php
 
-$apiToken = "7328905715:AAFU-FLZfoTz5To-pwr0QRybmSBIApS1jgo";
+$apiToken = "YOUR_TELEGRAM_BOT_TOKEN";
 $website = "https://api.telegram.org/bot".$apiToken;
 
 // Sample card data
@@ -19,6 +19,7 @@ if (isset($update["message"])) {
     $message = $update["message"]["text"];
 
     if ($message == "/start") {
+        clearMessages($chatId);
         sendCard($chatId, 0);
     }
 }
@@ -41,6 +42,25 @@ if (isset($update["callback_query"])) {
         } else {
             sendEndMessage($chatId);
         }
+}
+
+function clearMessages($chatId) {
+    global $website;
+    $updates = file_get_contents($website."/getUpdates");
+    $updates = json_decode($updates, TRUE);
+
+    if ($updates["ok"]) {
+        foreach ($updates["result"] as $update) {
+            if (isset($update["message"]["chat"]["id"]) && $update["message"]["chat"]["id"] == $chatId) {
+                $messageId = $update["message"]["message_id"];
+                deleteMessage($chatId, $messageId);
+            }
+            if (isset($update["callback_query"]["message"]["chat"]["id"]) && $update["callback_query"]["message"]["chat"]["id"] == $chatId) {
+                $messageId = $update["callback_query"]["message"]["message_id"];
+                deleteMessage($chatId, $messageId);
+            }
+        }
+    }
 }
 
 function sendCard($chatId, $index) {
@@ -80,7 +100,7 @@ function deleteMessage($chatId, $messageId) {
 
 function sendEndMessage($chatId) {
     global $website;
-    $message = "That's all for today !. Check back tomorrow";
+    $message = "No more businesses to show.";
     $url = $website."/sendMessage?chat_id=".$chatId."&text=".urlencode($message);
     file_get_contents($url);
 }
