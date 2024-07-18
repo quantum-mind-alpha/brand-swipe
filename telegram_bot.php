@@ -5,10 +5,10 @@ $website = "https://api.telegram.org/bot".$apiToken;
 
 // Sample card data
 $cards = [
-    ["image" => "/images/dominos.jpeg", "name" => "Domino's"],
-    ["image" => "/images/pizzahut.jpeg", "name" => "Pizza Hut"],
-    ["image" => "/images/lapinoz.jpeg", "name" => "La Pinoz"],
-    ["image" => "/images/ovenstory.jpeg", "name" => "Oven Story"]
+    ["image" => "https://seal-app-asu6p.ondigitalocean.app/images/dominos.jpeg", "name" => "Domino's"],
+    ["image" => "https://seal-app-asu6p.ondigitalocean.app/images/pizzahut.jpeg", "name" => "Pizza Hut"],
+    ["image" => "https://seal-app-asu6p.ondigitalocean.app/images/lapinoz.jpeg", "name" => "La Pinoz"],
+    ["image" => "https://seal-app-asu6p.ondigitalocean.app/images/ovenstory.jpeg", "name" => "Oven Story"]
 ];
 
 $update = file_get_contents('php://input');
