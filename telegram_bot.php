@@ -33,17 +33,14 @@ if (isset($update["callback_query"])) {
     $action = $parts[0];
     $currentIndex = (int)$parts[1];
 
-    if ($action == "like") {
-        sendConfetti($chatId);
-    } elseif ($action == "dislike") {
-        deleteMessage($chatId, $messageId);
-        $nextIndex = $currentIndex + 1;
+    deleteMessage($chatId, $messageId);
+
+    $nextIndex = $currentIndex + 1;
         if ($nextIndex < count($cards)) {
             sendCard($chatId, $nextIndex);
         } else {
             sendEndMessage($chatId);
         }
-    }
 }
 
 function sendCard($chatId, $index) {
@@ -52,7 +49,7 @@ function sendCard($chatId, $index) {
     $keyboard = [
         'inline_keyboard' => [
             [
-                ['text' => "👍", 'callback_data' => "like_$index"],
+                ['text' => "❤️", 'callback_data' => "like_$index"],
                 ['text' => "👎", 'callback_data' => "dislike_$index"]
             ]
         ]
