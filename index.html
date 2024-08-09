@@ -1,0 +1,21 @@
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.ext import Updater, CommandHandler, CallbackQueryHandler
+
+def start(update: Update, context):
+    keyboard = [
+        [InlineKeyboardButton("Open Mini App", url="https://dolphin-app-wkr7w.ondigitalocean.app/webapp.html")]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Click the button below to open the mini app:', reply_markup=reply_markup)
+
+def main():
+    updater = Updater("7328905715:AAFU-FLZfoTz5To-pwr0QRybmSBIApS1jgo", use_context=True)
+    dp = updater.dispatcher
+
+    dp.add_handler(CommandHandler("start", start))
+
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
