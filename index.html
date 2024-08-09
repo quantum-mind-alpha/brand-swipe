@@ -3,15 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Web App</title>
+    <title>Telegram Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script> <!-- Include Telegram Web App API -->
 </head>
 <body>
-    <h1>Telegram Web App</h1>
+    <h1>Hello, Welcome to the Mini App!</h1>
+    <p>This is a simple mini app opened via a Telegram bot.</p>
     <button id="helloButton">Click Me!</button>
 
     <script>
+        // Initialize the WebApp
+        Telegram.WebApp.ready();
+
+        // Add event listener to the button
         document.getElementById('helloButton').addEventListener('click', function() {
-            alert('Hello, World!');
+            Telegram.WebApp.showAlert('Hello, World!');
+        });
+
+        // Set WebApp Data if needed
+        Telegram.WebApp.onEvent('main_button_clicked', function(){
+            // You can handle main button clicks here
         });
     </script>
 </body>

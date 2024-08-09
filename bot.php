@@ -10,11 +10,14 @@ $updateArray = json_decode($update, TRUE);
 $chatId = $updateArray["message"]["chat"]["id"];
 $message = $updateArray["message"]["text"];
 
-// Define the keyboard with a button linking to the mini app
+// Define the keyboard with a button that launches the Telegram Web App
 $keyboard = [
     "inline_keyboard" => [
         [
-            ["text" => "Open Mini App", "url" => "https://dolphin-app-wkr7w.ondigitalocean.app/index.html"]
+            [
+                "text" => "Open Mini App",
+                "web_app" => ["url" => "https://dolphin-app-wkr7w.ondigitalocean.app/index.html"]
+            ]
         ]
     ]
 ];
