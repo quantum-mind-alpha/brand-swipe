@@ -15,7 +15,7 @@ $keyboard = [
     "inline_keyboard" => [
         [
             [
-                "text" => "Open Mini App",
+                "text" => "Start",
                 "web_app" => ["url" => "https://dolphin-app-wkr7w.ondigitalocean.app/index.html"]
             ]
         ]
@@ -24,7 +24,7 @@ $keyboard = [
 
 switch ($message) {
     case "/start":
-        sendMessage($chatId, "Click the button below to open the mini app:", $keyboard);
+        sendMessage($chatId, "Click the button below to start:", $keyboard);
         break;
     default:
         sendMessage($chatId, "I don't understand that command.");

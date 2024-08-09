@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script> <!-- Include Telegram Web App API -->
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.6/lottie.min.js"></script>
+
 </head>
 <body>
     <h1>Hello, Welcome to the Mini App!</h1>
@@ -25,5 +30,40 @@
             // You can handle main button clicks here
         });
     </script>
+    <!-- Main Content Container -->
+    <div id="content">
+        <div id="frens" class="tab-content">Refer your friends</div>
+        <div id="tasks" class="tab-content">Your Tasks for today</div>
+        <div id="earn" class="tab-content">Earn Content</div>
+        <div id="boost" class="tab-content">Boost Content</div>
+        <div id="airdrop" class="tab-content">Airdrop Content</div>
+    </div>
+    <div id="lottie-container" style="position: absolute; width: 100%; height: 100%; pointer-events: none;"></div>
+
+    <!-- Bottom Tab Bar -->
+    <div class="tab-bar">
+        <button class="tab-link active" data-tab="frens">
+            <i class="fas fa-users"></i>
+            <span>Ref</span>
+        </button>
+        <button class="tab-link" data-tab="tasks">
+            <i class="fas fa-tasks"></i>
+            <span>Earn</span>
+        </button>
+        <button class="tab-link" data-tab="earn">
+            <i class="fas fa-hand-holding-usd"></i>
+            <span>Tap</span>
+        </button>
+        <button class="tab-link" data-tab="boost">
+            <i class="fas fa-rocket"></i>
+            <span>Boost</span>
+        </button>
+        <button class="tab-link" data-tab="airdrop">
+            <i class="fas fa-gift"></i>
+            <span>Stats</span>
+        </button>
+    </div>
+
+    <script src="scripts.js"></script>
 </body>
 </html>
